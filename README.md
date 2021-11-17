@@ -8,7 +8,7 @@ Node version used: v13.12.0
 ## Issues
 
 - if using Windows there might be an issue with the CRLF and LF line endings in the csv file.
-If using MacOS run `git config core.autocrlf true`
+For MacOS run `git config core.autocrlf true`
 
 ## Future improvements
 
