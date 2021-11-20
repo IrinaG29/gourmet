@@ -36,21 +36,43 @@ function evaluatorAverageRating(){
   return JSON.stringify(averages);
 }
 
-function sentenceAverageRating(){
+function perSentenceStats(){
   var hash = new Object();
 
   records().forEach(row => {
     const sentence = row['sentence pair id']
-    if (typeof hash[sentence] === 'undefined') {
-      hash[sentence] = []
-    }
-    hash[sentence].push(parseInt(row['q1 score'], 10));
+      if (typeof hash[sentence] === 'undefined') {
+        hash[sentence] = new Object();
+      }
+
+      //adds all the scores to every sentence
+      if (typeof hash[sentence]['scores'] === 'undefined') {
+        hash[sentence]['scores'] = [];
+      }
+      hash[sentence]['scores'].push(parseInt(row['q1 score'], 10));
+
+      //finds the lowest scoring sentence
+      if (typeof hash[sentence]['lowestScoringSentence'] === 'undefined') {
+        hash[sentence]['lowestScoringSentence'] = parseInt(row['q1 score'], 10);
+      } else if (parseInt(row['q1 score'], 10) < hash[sentence]['lowestScoringSentence']) {
+        hash[sentence]['lowestScoringSentence'] = parseInt(row['q1 score'], 10);
+      }
+
+      //finds the highest scoring sentence
+      if (typeof hash[sentence]['highestScoringSentence'] === 'undefined') {
+        hash[sentence]['highestScoringSentence'] = parseInt(row['q1 score'], 10)
+      } else if (parseInt(row['q1 score'], 10) > hash[sentence]['highestScoringSentence']) {
+        hash[sentence]['highestScoringSentence'] = parseInt(row['q1 score'], 10)
+      }
   });
 
   const averages = new Object();
-  for (const sentence in hash) {
-    averages[sentence] = hash[sentence].reduce(sum, 0) / hash[sentence].length
-  }
+    for (const sentence in hash) {
+      averages[sentence] = new Object();
+      averages[sentence]['averageScore'] = hash[sentence]['scores'].reduce(sum, 0) / hash[sentence]['scores'].length
+      averages[sentence]['lowestScoringSentence'] = hash[sentence]['lowestScoringSentence']
+      averages[sentence]['highestScoringSentence'] = hash[sentence]['highestScoringSentence']
+    }
 
   fs.writeFileSync('./2.json', JSON.stringify(averages))
 
@@ -58,5 +80,5 @@ function sentenceAverageRating(){
 }
 
 module.exports = {
-  sentenceAverageRating: sentenceAverageRating,
-  evaluatorAverageRating: evaluatorAverageRating }
+  evaluatorAverageRating: evaluatorAverageRating,
+  perSentenceStats: perSentenceStats }

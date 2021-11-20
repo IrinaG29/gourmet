@@ -12,6 +12,10 @@ For MacOS run `git config core.autocrlf true`
 
 ## Future improvements
 
-- add highest and lowest scoring sentences
 - apply the DRY principle
 - beautify the json files output
+- display code coverage
+
+## Notes
+
+- have also added the highest and lowest scoring sentences since submitting my application
